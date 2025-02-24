@@ -10,4 +10,15 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#pragma once
+
+#include <iostream>
+#include <algorithm>
+#include <fstream>
+#include <string>
+#include <map>
+#include <stdint.h>
+#include <limits.h>
+
+int	BitcoinExchange(char **argv);
 

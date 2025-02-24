@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: isainz-r <isainz-r@student.42madrid>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,4 +10,16 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "BitcoinExchange.hpp"
 
+int main(int argc, char **argv)
+{
+	if (argc != 2)
+	{
+		std::cout << "Wrong number input" << std::endl;
+		return (1);
+	}
+	if (BitcoinExchange(argv) == 1)
+		return (1);
+	return (0);
+}
