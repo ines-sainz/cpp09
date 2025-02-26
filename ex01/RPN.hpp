@@ -10,4 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#pragma once
 
+#include <iostream>
+#include <stack>
+
+int	reverse_polish_notation(char *argv);
