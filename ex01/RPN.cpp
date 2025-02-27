@@ -28,51 +28,40 @@ int	reverse_polish_notation(char *argv)
 			return (1);
 		}
 		if (isdigit(argv[i]))
-		{
-			num_stack.push(argv[i] + '0');
-		}
-		if (argv[i] == '+' && num_stack.size() > 2)
+			num_stack.push(argv[i] - '0');
+		else if ((argv[i] == '+' || argv[i] == '-' || argv[i] == '*' || argv[i] == '/') && num_stack.size() >= 2)
 		{
 			num1 = num_stack.top();
 			num_stack.pop();
 			num2 = num_stack.top();
 			num_stack.pop();
-			total = num1 + num2;
+			if (argv[i] == '+')
+				total = num2 + num1;
+			if (argv[i] == '-')
+				total = num2 - num1;
+			if (argv[i] == '*')
+				total = num2 * num1;
+			if (argv[i] == '/')
+				total = num2 / num1;
 			num_stack.push(total);
 		}
-		if (argv[i] == '-' && num_stack.size() > 2)
+		else if (argv[i] == ' ')
 		{
-			num1 = num_stack.top();
-			num_stack.pop();
-			num2 = num_stack.top();
-			num_stack.pop();
-			total = num1 - num2;
-			num_stack.push(total);
+			i++;
+			continue ;
 		}
-		if (argv[i] == '*' && num_stack.size() > 2)
+		else
 		{
-			num1 = num_stack.top();
-			num_stack.pop();
-			num2 = num_stack.top();
-			num_stack.pop();
-			total = num1 * num2;
-			num_stack.push(total);
-		}
-		if (argv[i] == '/' && num_stack.size() > 2)
-		{
-			num1 = num_stack.top();
-			num_stack.pop();
-			num2 = num_stack.top();
-			num_stack.pop();
-			total = num1 / num2;
-			num_stack.push(total);
+			std::cout << "Error" << std::endl;
+			return (1);
 		}
 		i++;
 	}
-	if (num_stack.size() > 0)
+	if (num_stack.size() > 1)
 	{
 		std::cout << "Error" << std::endl;
 		return (1);
 	}
+	std::cout << num_stack.top() << std::endl;
 	return (0);
 }
