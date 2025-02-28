@@ -10,4 +10,13 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#pragma once
 
+#include <iostream>
+#include <list>
+#include <vector>
+#include <algorithm>
+#include <limits.h>
+#include <stdint.h>
+
+int	pmerge_me(char **argv);
