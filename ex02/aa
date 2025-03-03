@@ -13,11 +13,9 @@ add 15 big
 add 2 small
 add 10 big
 add 13 small
-111Small orddered: 5 3 7 1 4 11 2 13 
-111Big orddered: 12 9 14 8 6 15 10 
-Small orddered: 1 2 3 4 5 7 8 11 
+Small orddered: 1 2 3 4 5 7 11 13 
 Big orddered: 12 9 14 8 6 15 10 
 Before: 12 5 9 3 14 7 1 8 6 4 11 15 2 10 13 
 After: 5 12 3 9 7 14 1 8 4 6 11 15 2 10 13 
-Time to process a range of 15 elements with std::list : 0.231
-Time to process a range of 15 elements with std::vector : 0.021
+Time to process a range of 15 elements with std::list : 0.05
+Time to process a range of 15 elements with std::vector : 0.005

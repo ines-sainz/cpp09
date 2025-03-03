@@ -114,54 +114,29 @@ void	second_list_step(std::list<int> *list, std::list<int> *ordered_small_pair_l
 	while (it != list->end())
 	{
 		if (i % 2 == 0)
-		{
-			std::cout << "add " << *it << " small\n";
 			ordered_small_pair_list->push_back(*it);
-		}
 		else
-		{
-			std::cout << "add " << *it << " big\n";
 			big_pair_list->push_back(*it);
-		}
 		i++;
 		it++;
 	}
-	// it = ordered_small_pair_list->begin();
-	// std::cout << "111Small orddered: ";
-	// while (it != ordered_small_pair_list->end())
-	// {
-	// 	std::cout << *it << " ";
-	// 	it++;
-	// }
-	// std::cout << std::endl;
-	
-	// it = big_pair_list->begin();
-	// std::cout << "111Big orddered: ";
-	// while (it != big_pair_list->end())
-	// {
-	// 	std::cout << *it << " ";
-	// 	it++;
-	// }
-	// std::cout << std::endl;
-	
-	//THIS IS NOT WORKING -> DUPLICATING THINGS AND STUFF
 	it1 = ordered_small_pair_list->begin();
 	it2 = ordered_small_pair_list->begin();
 	it2++;
 	while (ordered_list(ordered_small_pair_list) != 0)
 	{
-		if (*it1 > *it2)
-		{
-			temp = *it1;
-			*it1 = *it2;
-			*it2 = temp;
-		}
 		if (it2 == ordered_small_pair_list->end())
 		{
 			it1 = ordered_small_pair_list->begin();
 			it2 = ordered_small_pair_list->begin();
 			it2++;
 			continue ;
+		}
+		if (*it1 > *it2)
+		{
+			temp = *it1;
+			*it1 = *it2;
+			*it2 = temp;
 		}
 		it1++;
 		it2++;
@@ -194,65 +169,41 @@ void	first_list_step(std::list<int> *list)
 	}
 }
 
-int	order_with_list(std::list<int> *list)
+int	order_with_list(std::list<int> *list, std::list<int> *ordered_small_pair_list)
 {
 	first_list_step(list);
-	std::list<int> ordered_small_pair_list;
 	std::list<int> big_pair_list;
-	second_list_step(list, &ordered_small_pair_list, &big_pair_list);
+	second_list_step(list, ordered_small_pair_list, &big_pair_list);
 
-	// std::list<int>::iterator	it = ordered_small_pair_list.begin();
-	// while (it != ordered_small_pair_list.end())
-	// {
-	// 	while (it_list != list->end())
-	// 	{
-	// 		if (*it_list < *it)
-	// 		{
-	// 			ordered_small_pair.insert();
-	// 		}
-	// 	}
-	// 	it++;
-	// }
-
-	std::list<int>::iterator	it = ordered_small_pair_list.begin();
-	std::cout << "Small orddered: ";
-	while (it != ordered_small_pair_list.end())
+	std::list<int>::iterator	it_big = big_pair_list.begin();
+	std::list<int>::iterator	it_small = big_pair_list.begin();
+	while (it_big != big_pair_list.end())
 	{
-		std::cout << *it << " ";
-		it++;
+		it_small = ordered_small_pair_list->begin();
+		while (it_small != ordered_small_pair_list->end())
+		{
+			if (*it_big < *it_small)
+			{
+				ordered_small_pair_list->insert(it_small, *it_big);
+				break ;
+			}
+			it_small++;
+		}
+		it_big++;
 	}
-	std::cout << std::endl;
-	
-	it = big_pair_list.begin();
-	std::cout << "Big orddered: ";
-	while (it != big_pair_list.end())
-	{
-		std::cout << *it << " ";
-		it++;
-	}
-	std::cout << std::endl;
-
-	// ordered_small_pair.insert(it, 99);
-	// it = ordered_small_pair.begin();
-	// std::cout << "2222Small orddered: ";
-	// while (it != ordered_small_pair.end())
-	// {
-	// 	std::cout << *it << " ";
-	// 	it++;
-	// }
-	// std::cout << std::endl;
 	return (0);
 }
 
 int	pmerge_me(char **argv)
 {
 	std::list<int>		list;
+	std::list<int>		list_ordered;
 	clock_t	time_list = clock();
 
 	if (parse_list(argv, &list) == 1)
 		return (1);
 	std::list<int>		temp = list;
-	if (order_with_list(&list) == 1)
+	if (order_with_list(&list, &list_ordered) == 1)
 	{
 		std::cout << "Error" << std::endl;
 		return (1);
@@ -278,8 +229,8 @@ int	pmerge_me(char **argv)
 	}
 	std::cout << std::endl;
 	std::cout << "After: ";
-	it = list.begin();
-	while (it != list.end())
+	it = list_ordered.begin();
+	while (it != list_ordered.end())
 	{
 		std::cout << *it << " ";
 		it++;
