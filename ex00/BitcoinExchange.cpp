@@ -64,8 +64,15 @@ int	check_input_file(std::ifstream *fileTxt, std::map<int, double>& csv_map)
 	std::map<int, double>::iterator it = csv_map.begin();
 
 	std::getline(*fileTxt, lines);
+	if (lines != "date | value")
+	{
+		std::cout << "Error: bad input" << std::endl;
+		return (1);
+	}
 	while (std::getline(*fileTxt, lines))
 	{
+		if (lines == "")
+			continue ;
 		separator = lines.find(" | ");
 		if (separator < 0)
 		{
