@@ -37,7 +37,10 @@ int	parse_vector(char **argv, std::vector<int> *vector)
 		while (it != vector->end())
 		{
 			if (*it == num)
+			{
+				std::cout << "Duplicated numbers" << std::endl;
 				return (1);
+			}
 			it++;
 		}
 		vector->push_back(num);
@@ -62,13 +65,51 @@ int	ordered_vector(std::vector<int> *vector)
 	return (0);
 }
 
+void	recursive_sort_vector(std::vector<int> &small_pair_vector)
+{
+	if (small_pair_vector.size() <= 1)
+		return ;
+	
+	std::vector<int>::iterator	half(small_pair_vector.begin());
+	std::advance(half, (small_pair_vector.size() / 2));
+
+	std::vector<int>			first_half(small_pair_vector.begin(), half);
+	std::vector<int>			second_half(half, small_pair_vector.end());
+
+	recursive_sort_vector(first_half);
+	recursive_sort_vector(second_half);
+
+	small_pair_vector.clear();
+
+	while (!first_half.empty() && !second_half.empty())
+	{
+		if (first_half.front() <= second_half.front())
+		{
+			small_pair_vector.push_back(first_half.front());
+			first_half.erase(first_half.begin());
+		}
+		else
+		{
+			small_pair_vector.push_back(second_half.front());
+			second_half.erase(second_half.begin());
+		}
+	}
+	while (!first_half.empty())
+	{
+		small_pair_vector.push_back(first_half.front());
+		first_half.erase(first_half.begin());
+	}
+	while (!second_half.empty())
+	{
+		small_pair_vector.push_back(second_half.front());
+		second_half.erase(second_half.begin());
+	}
+}
+
 void	second_vector_step(std::vector<int> *vector, std::vector<int> *ordered_small_pair_vector, std::vector<int> *big_pair_vector)
 {
 	std::vector<int>::iterator	it = vector->begin();
 	int							i = 0;
-	std::vector<int>::iterator	it1;
-	std::vector<int>::iterator	it2;
-	int							temp;
 
 	while (it != vector->end())
 	{
@@ -79,27 +120,7 @@ void	second_vector_step(std::vector<int> *vector, std::vector<int> *ordered_smal
 		i++;
 		it++;
 	}
-	it1 = ordered_small_pair_vector->begin();
-	it2 = ordered_small_pair_vector->begin();
-	it2++;
-	while (ordered_vector(ordered_small_pair_vector) != 0)
-	{
-		if (it2 == ordered_small_pair_vector->end())
-		{
-			it1 = ordered_small_pair_vector->begin();
-			it2 = ordered_small_pair_vector->begin();
-			it2++;
-			continue ;
-		}
-		if (*it1 > *it2)
-		{
-			temp = *it1;
-			*it1 = *it2;
-			*it2 = temp;
-		}
-		it1++;
-		it2++;
-	}
+	recursive_sort_vector(*ordered_small_pair_vector);
 }
 
 void	first_vector_step(std::vector<int> *vector)
@@ -127,30 +148,67 @@ void	first_vector_step(std::vector<int> *vector)
 	}
 }
 
+std::vector<int>::iterator	binary_search_vector(std::vector<int>::iterator start, std::vector<int>::iterator end, int number)
+{
+	std::cout << "end1=" << *end << std::endl;
+	if (start == end)
+		return (start);
+
+	std::vector<int>::iterator	half = start;
+	int							dist = std::distance(start, end);
+
+	if (dist == 1)
+	{
+		std::cout << "start" << *start << "number" << number << std::endl;
+		if (*start >= number)
+			return (start);
+		std::cout << "end" << *end << std::endl;
+		return (end);
+	}
+
+	std::advance(half, dist / 2);
+
+	std::cout << "dos" << std::endl;
+	if (number < *half)
+		return (binary_search_vector(start, half, number));
+	return (binary_search_vector(half, end, number));
+}
+
 int	order_with_vector(char **argv, std::vector<int> *vector, std::vector<int> *ordered_small_pair_vector)
 {
 	if (parse_vector(argv, vector) == 1)
 		return (1);
+
 	first_vector_step(vector);
 	std::vector<int>	big_pair_vector;
 	second_vector_step(vector, ordered_small_pair_vector, &big_pair_vector);
 
-	std::vector<int>::iterator	it_big = big_pair_vector.begin();
-	std::vector<int>::iterator	it_small = ordered_small_pair_vector->begin();
-	while (it_big != big_pair_vector.end())
+	print_array(big_pair_vector, GREEN, "BIG PAIR!!(vector): ");
+
+	ordered_small_pair_vector->insert(ordered_small_pair_vector->begin(), big_pair_vector.front());
+	big_pair_vector.erase(big_pair_vector.begin());
+	std::cout << "size=" << big_pair_vector.size() << std::endl;
+	print_array(*ordered_small_pair_vector, GREEN, "SMALL PAIR(list)!!: ");
+
+	for (std::vector<int>::iterator it = big_pair_vector.begin(); it != big_pair_vector.end(); it++)
 	{
-		it_small = ordered_small_pair_vector->begin();
-		while (it_small != ordered_small_pair_vector->end())
-		{
-			if (*it_big < *it_small)
-			{
-				ordered_small_pair_vector->insert(it_small, *it_big);
-				break ;
-			}
-			it_small++;
-		}
-		it_big++;
+		std::vector<int>::iterator	pos = binary_search_vector(ordered_small_pair_vector->begin(), ordered_small_pair_vector->end(), *it);
+		std::cout << "posv=" << *pos << std::endl;
+		std::cout << "it=" << *it << std::endl;
+		ordered_small_pair_vector->insert(pos, *it);
 	}
+	int	first_number = *ordered_small_pair_vector->begin();
+	std::cout << "binary search" << std::endl;
+
+	print_array(*ordered_small_pair_vector, YELLOW, "Vector: ");
+	std::cout << RED "Valor final (vector): " << *ordered_small_pair_vector->end() << NC;
+
+
+	std::vector<int>::iterator		pos = binary_search_vector(ordered_small_pair_vector->begin(), ordered_small_pair_vector->end(), first_number);
+	std::cout << "pos=" << *pos << "begin=" << *ordered_small_pair_vector->begin() << "first_number=" << first_number << std::endl;
+	ordered_small_pair_vector->erase(ordered_small_pair_vector->begin());
+	ordered_small_pair_vector->insert(ordered_small_pair_vector->begin(), first_number);
+	//ordered_small_pair_vector->insert(pos, first_number);
 	return (0);
 }
 
@@ -184,7 +242,10 @@ int	parse_list(char **argv, std::list<int> *list)
 		while (it != list->end())
 		{
 			if (*it == num)
+			{
+				std::cout << "Duplicated numbers" << std::endl;
 				return (1);
+			}
 			it++;
 		}
 		list->push_back(num);
@@ -209,13 +270,51 @@ int	ordered_list(std::list<int> *list)
 	return (0);
 }
 
+void	recursive_sort_list(std::list<int> &small_pair_list)
+{
+	if (small_pair_list.size() <= 1)
+		return ;
+
+	std::list<int>::iterator	half(small_pair_list.begin());
+	std::advance(half, (small_pair_list.size() / 2));
+
+	std::list<int>				first_half(small_pair_list.begin(), half);
+	std::list<int>				second_half(half, small_pair_list.end());
+
+	recursive_sort_list(first_half);
+	recursive_sort_list(second_half);
+
+	small_pair_list.clear();
+
+	while (!first_half.empty() && !second_half.empty())
+	{
+		if (first_half.front() <= second_half.front())
+		{
+			small_pair_list.push_back(first_half.front());
+			first_half.pop_front();
+		}
+		else
+		{
+			small_pair_list.push_back(second_half.front());
+			second_half.pop_front();
+		}
+	}
+	while (!first_half.empty())
+	{
+		small_pair_list.push_back(first_half.front());
+		first_half.pop_front();
+	}
+	while (!second_half.empty())
+	{
+		small_pair_list.push_back(second_half.front());
+		second_half.pop_front();
+	}
+}
+
 void	second_list_step(std::list<int> *list, std::list<int> *ordered_small_pair_list, std::list<int> *big_pair_list)
 {
 	std::list<int>::iterator	it = list->begin();
 	int							i = 0;
-	std::list<int>::iterator	it1;
-	std::list<int>::iterator	it2;
-	int							temp;
 
 	while (it != list->end())
 	{
@@ -226,27 +325,7 @@ void	second_list_step(std::list<int> *list, std::list<int> *ordered_small_pair_l
 		i++;
 		it++;
 	}
-	it1 = ordered_small_pair_list->begin();
-	it2 = ordered_small_pair_list->begin();
-	it2++;
-	while (ordered_list(ordered_small_pair_list) != 0)
-	{
-		if (it2 == ordered_small_pair_list->end())
-		{
-			it1 = ordered_small_pair_list->begin();
-			it2 = ordered_small_pair_list->begin();
-			it2++;
-			continue ;
-		}
-		if (*it1 > *it2)
-		{
-			temp = *it1;
-			*it1 = *it2;
-			*it2 = temp;
-		}
-		it1++;
-		it2++;
-	}
+	recursive_sort_list(*ordered_small_pair_list);
 }
 
 void	first_list_step(std::list<int> *list)
@@ -274,34 +353,68 @@ void	first_list_step(std::list<int> *list)
 	}
 }
 
+std::list<int>::iterator	binary_search_list(std::list<int>::iterator start, std::list<int>::iterator end, int number)
+{
+	std::cout << "end1=" << *end << std::endl;
+	if (start == end)
+		return (start);
+
+	std::list<int>::iterator	half = start;
+	int							dist = std::distance(start, end);
+
+	if (dist == 1)
+	{
+		std::cout << "start" << *start << "number" << number << std::endl;
+		if (*start >= number)
+			return (start);
+		std::cout << "end" << *end << std::endl;
+		return (end);
+	}
+
+	std::advance(half, dist / 2);
+
+	std::cout << "dos" << std::endl;
+	if (number < *half)
+		return (binary_search_list(start, half, number));
+	return (binary_search_list(half, end, number));
+}
+
 int	order_with_list(std::list<int> *list, std::list<int> *ordered_small_pair_list)
 {
 	first_list_step(list);
 	std::list<int> big_pair_list;
 	second_list_step(list, ordered_small_pair_list, &big_pair_list);
+	
+	print_array(*ordered_small_pair_list, MAGENTA, "ORDERED SMALL PAIR LIST!!(list): ");
+	print_array(big_pair_list, MAGENTA, "BIG PAIR LIST!!(list): ");
 
-	std::list<int>::iterator	it_big = big_pair_list.begin();
-	std::list<int>::iterator	it_small = ordered_small_pair_list->begin();
-	while (it_big != big_pair_list.end())
+	ordered_small_pair_list->push_front(big_pair_list.front());
+	big_pair_list.pop_front();
+
+	print_array(big_pair_list, GREEN, "BIG PAIR(list)!!: ");
+	print_array(*ordered_small_pair_list, GREEN, "SMALL PAIR(list)!!: ");
+
+	for (std::list<int>::iterator it = big_pair_list.begin(); it != big_pair_list.end(); it++)
 	{
-		it_small = ordered_small_pair_list->begin();
-		while (it_small != ordered_small_pair_list->end())
-		{
-			if (*it_big < *it_small)
-			{
-				ordered_small_pair_list->insert(it_small, *it_big);
-				break ;
-			}
-			it_small++;
-		}
-		it_big++;
+	    std::list<int>::iterator	pos = binary_search_list(ordered_small_pair_list->begin(), ordered_small_pair_list->end(), *it);
+		std::cout << "pos=" << *pos << std::endl;
+		std::cout << "it=" << *it << std::endl;
+	    ordered_small_pair_list->insert(pos, *it);
 	}
+	int first_number = *ordered_small_pair_list->begin();
+	std::cout << "hola" << std::endl;
+
+	print_array(*ordered_small_pair_list, YELLOW, "List: ");
+	std::cout << MAGENTA "Valor final : " << *ordered_small_pair_list->end() << NC;
+
+
+	std::list<int>::iterator		pos = binary_search_list(ordered_small_pair_list->begin(), ordered_small_pair_list->end(), first_number);
+	std::cout << "pos=" << *pos << "begin=" << *ordered_small_pair_list->begin() << "first_number=" << first_number << std::endl;
+	ordered_small_pair_list->pop_front();
+	ordered_small_pair_list->insert(pos, first_number);
+
 	return (0);
 }
-
-
-
-
 
 int	pmerge_me(char **argv)
 {
@@ -322,28 +435,51 @@ int	pmerge_me(char **argv)
 	std::vector<int>	vector;
 	std::vector<int>	vector_ordered;
 	clock_t	time_vector = clock();
-	
+	//std::cout << "hola" << std::endl;
 	if (order_with_vector(argv, &vector, &vector_ordered) == 1)
 	{
 		std::cout << "Error" << std::endl;
 		return (1);
 	}
+	//std::cout << "adios" << std::endl;
 	double	end_vector = static_cast<double>(clock() - time_vector) / CLOCKS_PER_SEC * 1000;
 
 	std::cout << "Before: ";
 	std::list<int>::iterator	it = temp.begin();
+	int							breaker = 0;
+	int							i = 0;
+	if (temp.size() > 5)
+		breaker = 1;
 	while (it != temp.end())
 	{
+		if (breaker == 1 && i == 4)
+		{
+			std::cout << "[...]";
+			break ;
+		}
 		std::cout << *it << " ";
 		it++;
+		i++;
 	}
 	std::cout << std::endl;
 	std::cout << "After: ";
-	it = list_ordered.begin();
-	while (it != list_ordered.end())
+	std::vector<int>::iterator iter;
+	//it = list_ordered.begin();
+	iter = vector_ordered.begin();
+	breaker = 0;
+	i = 0;
+	if (list_ordered.size() > 5)
+		breaker = 0;                        //777777777777777777777 CAMBIAR A UNO 1111111111111111111111111111111111111
+	while (iter != vector_ordered.end())
 	{
-		std::cout << *it << " ";
-		it++;
+		if (breaker == 1 && i == 4)
+		{
+			std::cout << "[...]";
+			break ;
+		}
+		std::cout << *iter << " ";
+		iter++;
+		i++;
 	}
 	std::cout << std::endl;
 	std::cout << "Time to process a range of " << list.size() << " elements with std::list : " << end_list << std::endl;
