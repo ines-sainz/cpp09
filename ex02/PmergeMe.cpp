@@ -150,7 +150,6 @@ void	first_vector_step(std::vector<int> *vector)
 
 std::vector<int>::iterator	binary_search_vector(std::vector<int>::iterator start, std::vector<int>::iterator end, int number)
 {
-	std::cout << "end1=" << *end << std::endl;
 	if (start == end)
 		return (start);
 
@@ -159,16 +158,13 @@ std::vector<int>::iterator	binary_search_vector(std::vector<int>::iterator start
 
 	if (dist == 1)
 	{
-		std::cout << "start" << *start << "number" << number << std::endl;
 		if (*start >= number)
 			return (start);
-		std::cout << "end" << *end << std::endl;
 		return (end);
 	}
 
 	std::advance(half, dist / 2);
 
-	std::cout << "dos" << std::endl;
 	if (number < *half)
 		return (binary_search_vector(start, half, number));
 	return (binary_search_vector(half, end, number));
@@ -183,32 +179,19 @@ int	order_with_vector(char **argv, std::vector<int> *vector, std::vector<int> *o
 	std::vector<int>	big_pair_vector;
 	second_vector_step(vector, ordered_small_pair_vector, &big_pair_vector);
 
-	print_array(big_pair_vector, GREEN, "BIG PAIR!!(vector): ");
-
-	ordered_small_pair_vector->insert(ordered_small_pair_vector->begin(), big_pair_vector.front());
-	big_pair_vector.erase(big_pair_vector.begin());
-	std::cout << "size=" << big_pair_vector.size() << std::endl;
-	print_array(*ordered_small_pair_vector, GREEN, "SMALL PAIR(list)!!: ");
+//	ordered_small_pair_vector->insert(ordered_small_pair_vector->begin(), big_pair_vector.front());
+//	big_pair_vector.erase(big_pair_vector.begin());
 
 	for (std::vector<int>::iterator it = big_pair_vector.begin(); it != big_pair_vector.end(); it++)
 	{
 		std::vector<int>::iterator	pos = binary_search_vector(ordered_small_pair_vector->begin(), ordered_small_pair_vector->end(), *it);
-		std::cout << "posv=" << *pos << std::endl;
-		std::cout << "it=" << *it << std::endl;
 		ordered_small_pair_vector->insert(pos, *it);
 	}
-	int	first_number = *ordered_small_pair_vector->begin();
-	std::cout << "binary search" << std::endl;
 
-	print_array(*ordered_small_pair_vector, YELLOW, "Vector: ");
-	std::cout << RED "Valor final (vector): " << *ordered_small_pair_vector->end() << NC;
-
-
-	std::vector<int>::iterator		pos = binary_search_vector(ordered_small_pair_vector->begin(), ordered_small_pair_vector->end(), first_number);
-	std::cout << "pos=" << *pos << "begin=" << *ordered_small_pair_vector->begin() << "first_number=" << first_number << std::endl;
-	ordered_small_pair_vector->erase(ordered_small_pair_vector->begin());
-	ordered_small_pair_vector->insert(ordered_small_pair_vector->begin(), first_number);
-	//ordered_small_pair_vector->insert(pos, first_number);
+//	int	first_number = *ordered_small_pair_vector->begin();
+//	std::vector<int>::iterator		pos = binary_search_vector(ordered_small_pair_vector->begin(), ordered_small_pair_vector->end(), first_number);
+//	ordered_small_pair_vector->erase(ordered_small_pair_vector->begin());
+//	ordered_small_pair_vector->insert(pos, first_number);
 	return (0);
 }
 
@@ -355,7 +338,6 @@ void	first_list_step(std::list<int> *list)
 
 std::list<int>::iterator	binary_search_list(std::list<int>::iterator start, std::list<int>::iterator end, int number)
 {
-	std::cout << "end1=" << *end << std::endl;
 	if (start == end)
 		return (start);
 
@@ -364,16 +346,13 @@ std::list<int>::iterator	binary_search_list(std::list<int>::iterator start, std:
 
 	if (dist == 1)
 	{
-		std::cout << "start" << *start << "number" << number << std::endl;
 		if (*start >= number)
 			return (start);
-		std::cout << "end" << *end << std::endl;
 		return (end);
 	}
 
 	std::advance(half, dist / 2);
 
-	std::cout << "dos" << std::endl;
 	if (number < *half)
 		return (binary_search_list(start, half, number));
 	return (binary_search_list(half, end, number));
@@ -384,34 +363,20 @@ int	order_with_list(std::list<int> *list, std::list<int> *ordered_small_pair_lis
 	first_list_step(list);
 	std::list<int> big_pair_list;
 	second_list_step(list, ordered_small_pair_list, &big_pair_list);
-	
-	print_array(*ordered_small_pair_list, MAGENTA, "ORDERED SMALL PAIR LIST!!(list): ");
-	print_array(big_pair_list, MAGENTA, "BIG PAIR LIST!!(list): ");
 
-	ordered_small_pair_list->push_front(big_pair_list.front());
-	big_pair_list.pop_front();
-
-	print_array(big_pair_list, GREEN, "BIG PAIR(list)!!: ");
-	print_array(*ordered_small_pair_list, GREEN, "SMALL PAIR(list)!!: ");
+//	ordered_small_pair_list->push_front(big_pair_list.front());
+//	big_pair_list.pop_front();
 
 	for (std::list<int>::iterator it = big_pair_list.begin(); it != big_pair_list.end(); it++)
 	{
 	    std::list<int>::iterator	pos = binary_search_list(ordered_small_pair_list->begin(), ordered_small_pair_list->end(), *it);
-		std::cout << "pos=" << *pos << std::endl;
-		std::cout << "it=" << *it << std::endl;
 	    ordered_small_pair_list->insert(pos, *it);
 	}
-	int first_number = *ordered_small_pair_list->begin();
-	std::cout << "hola" << std::endl;
 
-	print_array(*ordered_small_pair_list, YELLOW, "List: ");
-	std::cout << MAGENTA "Valor final : " << *ordered_small_pair_list->end() << NC;
-
-
-	std::list<int>::iterator		pos = binary_search_list(ordered_small_pair_list->begin(), ordered_small_pair_list->end(), first_number);
-	std::cout << "pos=" << *pos << "begin=" << *ordered_small_pair_list->begin() << "first_number=" << first_number << std::endl;
-	ordered_small_pair_list->pop_front();
-	ordered_small_pair_list->insert(pos, first_number);
+//	int first_number = *ordered_small_pair_list->begin();
+//	std::list<int>::iterator		pos = binary_search_list(ordered_small_pair_list->begin(), ordered_small_pair_list->end(), first_number);
+//	ordered_small_pair_list->pop_front();
+//	ordered_small_pair_list->insert(pos, first_number);
 
 	return (0);
 }
@@ -435,13 +400,11 @@ int	pmerge_me(char **argv)
 	std::vector<int>	vector;
 	std::vector<int>	vector_ordered;
 	clock_t	time_vector = clock();
-	//std::cout << "hola" << std::endl;
 	if (order_with_vector(argv, &vector, &vector_ordered) == 1)
 	{
 		std::cout << "Error" << std::endl;
 		return (1);
 	}
-	//std::cout << "adios" << std::endl;
 	double	end_vector = static_cast<double>(clock() - time_vector) / CLOCKS_PER_SEC * 1000;
 
 	std::cout << "Before: ";
@@ -463,22 +426,20 @@ int	pmerge_me(char **argv)
 	}
 	std::cout << std::endl;
 	std::cout << "After: ";
-	std::vector<int>::iterator iter;
-	//it = list_ordered.begin();
-	iter = vector_ordered.begin();
+	it = list_ordered.begin();
 	breaker = 0;
 	i = 0;
 	if (list_ordered.size() > 5)
-		breaker = 0;                        //777777777777777777777 CAMBIAR A UNO 1111111111111111111111111111111111111
-	while (iter != vector_ordered.end())
+		breaker = 1;
+	while (it != list_ordered.end())
 	{
 		if (breaker == 1 && i == 4)
 		{
 			std::cout << "[...]";
 			break ;
 		}
-		std::cout << *iter << " ";
-		iter++;
+		std::cout << *it << " ";
+		it++;
 		i++;
 	}
 	std::cout << std::endl;
